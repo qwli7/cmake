@@ -5,7 +5,7 @@
 
 注意：每一步的练习都建立在上一步的基础上。例如，`Step02` 的开始代码就是 `Step01` 的完成代码；
 
-### 练习1-构建一个基本的工程
+### 练习1 - 构建一个基本的工程
 最基本的 `CMake` 工程是从一个单独的源文件构建得来的一个可执行目标；对于这样简单的项目，只需要一个包含三行代码的 `CMakeLists.txt` 文件
 
 **注意：** 尽管 `CMake` 支持大写、小写以及混合写法的命令，但小写命令仍然是首选并且在整个教程中会被使用；
@@ -17,28 +17,28 @@
 最后，`add_executable()` 命令会告诉 `CMake` 使用指定的源文件去创建一个可执行的程序
 
 
-#### 目标
+#### 1.目标
 理解如何去创建一个简单的 `CMake` 工程
 
-#### 有用的资源
+#### 2.有用的资源
 - `add_executable()`  //创建一个可执行的资源，根据给定的源文件
 - `cmake_minimum_required()` //指定 CMake 的最小版本号
 - `project()`  //指定项目名称或者其他项目级别的信息
 
 
-#### 要修改的文件
+#### 3.要修改的文件
 - `CMakeLists.txt`
 
-#### 开始（`Getting Started`）
+#### 4.开始（`Getting Started`）
 在 `Step01` 目录中提供了一个 `tutorial.cxx`的源文件，用来计算给定数字的平方根；这个文件在当前步骤中不需要被更新；
 
 同样，在 `Step01` 目录中，你需要完成的文件是 `CMakeLists.txt`, 开始完成 `TODO1` 和 `TODO3` 吧
 
 
-#### 构建和运行（`Build and Run`）
+#### 5.构建和运行（`Build and Run`）
 一旦 `TODO1` 和 `TODO3` 被完成，我们就可以去构建和运行我们的项目。首先运行 `cmake` 命令或者 `cmake-gui` 工具去配置项目，然后使用你选择的构建工具去构建它；
 
-例如：我们可以通过命令行工具导航到 `Step01` 的目录，然后创建一个构建目录；
+例如：我们可以通过命令行工具导航到 `Step01` 的上一级目录，然后创建一个构建目录；
 ```cmd
 mkdir Step1_build
 ```
@@ -64,9 +64,18 @@ Tutorial
 
 **注意**：依赖不同的 `shell`，正确的语法可能是 `Tutorial`，`./Tutorial`，或者 `.\Tutorial`，在本练习中使用第一个
 
-#### 解决方案（`Solution`） 
+#### 6.解决方案（`Solution`） 
 略，详细可查看 [CMakeList.txt](CMakeLists.txt) 中的 `TODO1` 和 `TODO3`
 
+```cmake
+cmake_minimum_required(VERSION 3.10)
+project(Tutorial) 
+add_executable(Tutorial Tutorial.cxx)
+```
+
+
+### 练习2 - 指定 `C++` 的标准
+`CMake` 有一些特殊的变量，这些变量要么是在幕后被创建的，要么是在项目中被设置的；这些大多数的变量都是以 `CMake_` 开头，在你的项目中，应当尽量避免和 `CMake` 的内置变量冲突；
 
 ```cmakelist
 //指定 CMakeLists.txt 所在的文件目录，生成对应平台的工程目录
