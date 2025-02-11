@@ -51,7 +51,7 @@ cmake ../Step1
 ```cmd
 cmake --build .
 ```
-对多配置生成器（例如 `Visual Studio`），首先导航到核视的子目录；
+对多配置生成器（例如 `Visual Studio`），首先导航到合适的子目录；
 ```cmd
 cd Debug
 ```
