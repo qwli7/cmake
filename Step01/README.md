@@ -75,7 +75,148 @@ add_executable(Tutorial Tutorial.cxx)
 
 
 ### 练习2 - 指定 `C++` 的标准
-`CMake` 有一些特殊的变量，这些变量要么是在幕后被创建的，要么是在项目中被设置的；这些大多数的变量都是以 `CMake_` 开头，在你的项目中，应当尽量避免和 `CMake` 的内置变量冲突；
+`CMake` 有一些特殊的变量，这些变量要么是在幕后被创建的，要么是在项目中被设置的；这些大多数的变量都是以 `CMake_` 开头，在你的项目中，应当尽量避免和 `CMake` 的内置变量命名冲突；其中有两个变量用户可在构建项目时需要设置的，它们是 `CMAKE_CXX_STANDARD` 和 `CMAKE_CXX_STANDARD_REQUIRED`
+
+#### 1.目标
+添加一个需要 `C++11` 支持的新特性
+
+#### 2.有用的资源
+- `CMAKE_CXX_STANDARD`
+- `CMAKE_CXX_STANDARD_REQUIRED`
+- `set()`
+
+#### 3.需要修改的文件 （`Files to Edit`）
+- `CMakeLists.txt`
+- `tutorial.cxx`
+
+#### 4.开始（`Getting Started`）
+继续编辑 `Step01` 目录中的文件，完成步骤 `TODO 4` 和 `TODO 6`
+
+首先，编辑 `tutorial.cxx` 添加一个 `C++11` 的新特性，然后更新 `CMakeLists.txt` 文件，去设置需要 `C++11` 的标准；
+
+#### 5.构建和运行（`Build and Run`）
+让我们来再一次构建我们的项目，之前我们已经创建过一个构建目录并且已经运行过 `Exercise 1`，我们可以跳过直接执行构建步骤；
+```cmd
+cd Step1_build
+cmake --build .
+```
+
+现在我们可以我们新构建的 `Tutorial`，用法和之前使用的一样
+```cmd
+Tutorial 4294967296
+Tutorial 10
+Tutorial
+```
+
+#### 6.解决方案（`Solution`）
+略过，具体可以查看 [tutorial](tutorial.cxx) 中的 `TODO 4` 和 `TODO 5` 以及 [CMakeLists z](CMakeLists.txt) 中的 `TODO 6`;
+
+```cmake
+## 判断设置的 CXX 标准是否支持，
+## 设置为 True，如果不支持，则会报错，
+## 设置为 False，如果不支持，则会选用上一级支持的 C++标准
+## 假设 CXX 标准设置成 26，配置为 False，则默认会选择 CXX23 来进行构建 
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED True) 
+```
+ 
+
+ ### 练习3 - 添加版本号和配置头文件
+有时候，有些定义在 `CMakeLists.txt` 中定义的某些变量可能在你的源文件里面也需要被使用到，在这个案例中，我们希望能打印项目的版本号
+
+实现这一目标的方法之一就是使用配置好的头文件。我们创建一个输入文件，其中包含一个或者多个需要被替换的变量；这些变量有一些特殊的语法规则，例如 `@VAR@`，然后我们使用 `configure_file()` 命令去拷贝输入文件到一个给定的输出文件中，并且用 `CMakeLists.txt` 文件中 `VAR` 的当前值去替换；
+
+虽然我们可以直接在源代码中去编辑版本，但在单一文件中修改并替换这一操作时首选的，且能避免重复；
+
+#### 1.目标
+定义并且打印项目的版本号
+
+#### 2.有用的资源
+- `<PROJECT-NAME>_VERSION_MAJOR`
+- `<PROJECT-NAME>_VERSION_MINJOR`
+- `configure_file()`
+- `target_include_directories()`
+
+#### 3.需要修改的文件（`File to Edit`）
+- `CMakeLists.txt`
+- `tutorial.cxx`
+
+#### 4.开始（`Getting Started`）
+继续编辑 `Step01` 中的文件，完成 `TODO 7` 到 `TODO 12`。在这个练习中，我们首先在 `CMakeLists.txt` 中添加一个项目版本号，然后在用 `configure_file()` 命令去拷贝一个输入文件到输出文件中，并在输出文件中替换一些值；
+
+接下来，创建一个头文件 `TutorialConfig.h.in`，在其中定义一个版本号，这个文件将作为 `configure_file()` 的输入参数；
+
+最后，更新 `tutorial.cxx` 文件，去打印定义的版本号；
+
+#### 5.构建和运行（`Build and Run`）
+让我们来再一次构建我们的项目，之前我们已经创建过一个构建目录并且已经运行过 `Exercise 1`，我们可以跳过直接执行构建步骤；
+```cmd
+cd Step1_build
+cmake --build .
+```
+验证当我们现在执行程序时，版本号现在是否可以正常输出了；
+
+#### 6.解决方案（`Solution`）
+略过，具体可以查看 [tutorial](tutorial.cxx) 和 [CMakeLists.txt](CMakeLists.txt) 以及 [TutorialConfig.h.in](TutorialConfig.h.in)
+
+
+## Step 完整代码展示
+### CMakeLists.txt
+```cmake
+
+
+cmake_minimum_required(VERSION 3.10)  
+
+project(Tutorial VERSION 1.0)
+
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED True) 
+
+configure_file(TutorialConfig.h.in TutorialConfig.h) 
+
+add_executable(Tutorial Tutorial.cxx) 
+
+target_include_directories(Tutorial PUBLIC "${PROJECT_BINARY_DIR}")
+
+```
+
+### TutorialConfig.h.in
+```cpp
+#define Tutorial_VERSION_MAJOR @Tutorial_VERSION_MAJOR@
+#define Tutorial_VERSION_MINOR @Tutorial_VERSION_MINOR@
+```
+
+### tutorial.cxx
+```cpp
+#include <cmath>
+//#include <cstdlib> 
+#include <iostream>
+#include <string>
+#include "TutorialConfig.h"
+
+int main(int argc, char* argv[])
+{
+  if (argc < 2) {
+    // TODO 12: Create a print statement using Tutorial_VERSION_MAJOR
+    //          and Tutorial_VERSION_MINOR
+    std::cout << "Usage: " << argv[0] << " number" << std::endl;
+    std::cout << "Tutorial_VERSION_MINOR " << Tutorial_VERSION_MINOR << std::endl;
+    std::cout << "Tutorial_VERSION_MAJOR" << Tutorial_VERSION_MAJOR << std::endl; 
+    return 1;
+  }
+
+  // const double inputValue = atof(argv[1]);
+  const double inputValue = std::stod(argv[1]);
+
+  // calculate square root
+  const double outputValue = sqrt(inputValue);
+  std::cout << "The square root of " << inputValue << " is " << outputValue
+            << std::endl;
+  return 0;
+}
+
+```
+
 
 ```cmakelist
 //指定 CMakeLists.txt 所在的文件目录，生成对应平台的工程目录
