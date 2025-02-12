@@ -133,4 +133,17 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 #TODO4
 add_library(tutorial_compiler_flags INTERFACE)
 target_compile_features(tutorial_compiler_flags INTERFACE cxx_std_11)
-···
+```
+最后，设置好接口库后，我们需要将可执行 `Tutorial`，`SqrtLibrary` 库和 `MathFunctions` 库链接到新的 `tutorial_compiler_flags` 库。代码如下：
+```cmake
+#TODO5
+target_link_libraries(Tutorial PUBLIC MathFunctions tutorial_compiler_flags)
+
+# TODO6
+target_link_libraries(SqrtLibrary PUBLIC tutorial_compiler_flags)
+
+# TODO7
+target_link_libraries(MathFunctions PUBLIC tutorial_compiler_flags)
+```
+
+
