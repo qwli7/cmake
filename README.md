@@ -4,9 +4,33 @@
 
 - [Step01 一个基本的入口点](Step01/README.md)
 - [Step02 添加库](Step02/README.md)
+- [Step03 添加库的使用依赖](Step03/README.md)
 
+## `CMake` 命令行工具
+安装好 `CMake` 后，将 `bin` 目录添加到环境变量中，通过 `cmake --version` 来验证是否安装成功 
+### 生成工程
+进入到顶层 `CMakeLists.txt` 文件夹下，执行 `cmake .` 指令（默认生成的是 `VS` 工程代码，如果你的电脑上安装了 `VS`）
+```shell
+cmake .
+```
+### 指定生成平台
+通过 `-G` 选项，可以指定生成平台，例如生成 `MinGW Makefiles`
+```shell
+cmake . -G "MinGW Makefiles"
+```
+
+### 构建
+利用生成的工程进行构建
+```shell
+cmake --build .  
+```
+
+其他命令可以通过 `cmake --help` 查看具体的用法
 
 ## `CMake` 常用指令
+
+[CMake命令官网地址](https://cmake.org/cmake/help/latest/manual/cmake-commands.7.html)
+
 - `cmake_minimum_required(VERSION <version>)` 指定运行此 `CMakeLists.txt` 文件的最低 `CMake` 版本
 - `project(<project_name> [<language> ...])` 设定项目名称和语言，也可设置版本号等，运行时会设置 `CMAKE_PROJECT_NAME` 属性
     - 执行后，内置四种变量
@@ -87,3 +111,11 @@
     target_link_libraries(cmake_project MyFunc) #链接 MyFunc 这个库，给可执行文件
 
     ```
+
+-  `target_compile_features(<target> <PRIVATE|PUBLIC|INTERFACE> <feature> [....])` 给编译器提供特征
+    ```cmake
+    # 这里的设置是全局的，假设我这里设置了标准为 11 ，但是代码中使用 17 提供的 string_view，构建就会报错
+    # set(CMAKE_CXX_STANDARD 11)
+    # set(CMAKE_CXX_STANDARD_REQUIRED true)
+    ```
+   
