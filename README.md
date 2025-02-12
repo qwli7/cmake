@@ -51,6 +51,8 @@
 - `target_include_directories(<target> <INTERFACE|PUBLIC|PRIVATE> [items1...] <INTERFACE|PUBLIC|PRIVATE> [items2...]...)` 给目标添加包含目录
     - 编译给定的目标时，指定包含目录；多次调用会被追加
     - `target` 必须是被 `add_executable()` 或者 `add_library()` 命令创建的对象
+    - `PUBLIC` `INTERFACE` `PRIVATE` 指明了后面参数传递的范围
+ 
 
 - `set(<variable> <value>...)` 设置变量的值
 
@@ -64,7 +66,7 @@
     configure_file(common.h.in, "include/common.h"); //可执行文件创建文件夹
     ```
 
-- `message([<mode>] "message text...")` 打印日志，`mode` 通常设置为 `STATUS` 即可，常见的可以参考 ![message mode 定义](https://cmake.org/cmake/help/latest/command/message.html)
+- `message([<mode>] "message text...")` 打印日志，`mode` 通常设置为 `STATUS` 即可，常见的可以参考 [message mode 定义](https://cmake.org/cmake/help/latest/command/message.html)
     ```cmake
     message(STATUS "hello world"); //打印消息
     ```
@@ -72,4 +74,16 @@
     ```cmake
     aux_source_directory(. SRC_LIST) # 从当前的目录中，查找所有的源文件，放到 SRC_LIST 中
     message(STATUS ${SRC_LIST})
+    ```
+- `add_subdirectory(source_dir [binary_dir])`  向生成添加一个子目录，默认添加到可执行文件的生成目录中
+    ```cmake
+    # MyFunctions/CMakeLists.txt 中
+    add_library(MyFunc STATIC myfunction.cpp) # 添加一个静态库
+    target_include_directories(MyFunc INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}) # 默认把头文件也包含进去
+    
+    # CMakeLists.txt
+    add_subdirectory(MyFunctions) # 把 MyFunctions 这个目录添加到可执行文件目录下
+    add_executable(cmake_project main.cpp)
+    target_link_libraries(cmake_project MyFunc) #链接 MyFunc 这个库，给可执行文件
+
     ```
